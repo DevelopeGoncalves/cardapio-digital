@@ -2,1217 +2,1081 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cardápio Digital - Monte seu Pedido</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Victorino.eng | Menu Premium</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            /* Paleta Premium Dark Gold */
+            --bg-body: #0a0a0a;
+            --bg-card: #141414;
+            --bg-card-highlight: #1e1e1e;
+            
+            --primary: #D4AF37; /* Ouro Clássico */
+            --primary-light: #F4D06F;
+            --secondary: #C0392B; /* Accent Vermelho Nobre */
+            
+            --text-main: #FFFFFF;
+            --text-muted: #A0A0A0;
+            
+            --glass: rgba(20, 20, 20, 0.85);
+            --border: 1px solid rgba(255, 255, 255, 0.08);
+            --shadow: 0 10px 30px rgba(0,0,0,0.5);
+            
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+            
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        :root {
-            /* Paleta inspirada em cores quentes para apetite (Vermelho, Laranja, Amarelo) */
-            --primary: #FFC300; /* Amarelo Gema/Vivo (Destaque e Texto Principal) */
-            --secondary: #D43D1A; /* Vermelho Pimenta (Ação, Seleção e Borda de Título) */
-            --accent: #FF7E00; /* Laranja Mandarim (Transição de Seleção) */
-            --success: #4CAF50; /* Verde para WhatsApp */
-            --danger: #e74c3c;
-            --light: #2A2A2A; /* Fundo do Conteúdo (Quase Preto) */
-            --dark: #1a1a1a; /* Fundo da tela do celular */
-            --gray: #444444; /* Cinza para bordas/separadores */
-            --white: #ffffff;
-            --shadow: rgba(0, 0, 0, 0.4);
-            --shadow-lg: rgba(0, 0, 0, 0.6);
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            /* Fundo escuro sutil para emular o restaurante no fundo */
-            background: linear-gradient(135deg, #1A1A1A 0%, #000000 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            padding: 20px 0;
-            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            padding-bottom: 140px; /* Espaço para o carrinho flutuante */
+            overflow-x: hidden;
         }
 
-        .phone-container {
-            max-width: 420px;
-            width: 100%;
-            background: var(--dark); /* Cor escura do celular */
-            border-radius: 30px;
-            box-shadow: 0 20px 80px var(--shadow-lg); /* Sombra maior para destaque */
-            overflow: hidden;
+        /* --- HERO SECTION (CAPA) --- */
+        .hero {
             position: relative;
-            /* Simulação do entalhe do celular (notch) */
-            padding-top: 10px; 
+            height: 32vh;
+            min-height: 250px;
+            
+            /* AQUI ESTÁ A MUDANÇA: Puxando da pasta local */
+            background: url('img/capa.jpg') center/cover no-repeat;
+            
+            /* Cor de fundo caso a imagem não carregue */
+            background-color: #1a1a1a; 
+            
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
         }
-        
-        /* Simulação do entalhe */
-        .phone-container:before {
+
+        .hero::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 15px;
-            background: var(--dark);
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
-            z-index: 100;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, var(--bg-body) 100%);
         }
 
-        /* --- ANIMAÇÕES DE EFEITO --- */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse-button {
-            0% { box-shadow: 0 0 0 0 rgba(212, 61, 26, 0.7); } /* Cor ajustada para secondary */
-            70% { box-shadow: 0 0 0 10px rgba(212, 61, 26, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(212, 61, 26, 0); }
-        }
-
-        /* Aplica animação de entrada a todas as seções */
-        .section, .summary {
-            animation: fadeInUp 0.5s ease-out both;
-        }
-        .section:nth-child(2) { animation-delay: 0.1s; }
-        .section:nth-child(3) { animation-delay: 0.2s; }
-        .section:nth-child(4) { animation-delay: 0.3s; }
-        .summary { animation-delay: 0.4s; }
-
-
-        header {
-            padding: 25px 20px 15px;
+        .hero-content {
+            position: relative;
+            z-index: 2;
             text-align: center;
-            background: var(--dark);
-            color: var(--white);
-            position: relative;
-            overflow: hidden;
+            padding-bottom: 30px;
+            width: 100%;
         }
 
-        .logo {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 5px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .logo-icon {
-            width: 70px;
-            height: 70px;
-            border: 3px solid var(--secondary); /* Borda em cor de destaque */
+        .brand-badge {
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
+            border: 3px solid var(--primary);
+            margin: 0 auto 15px;
+            background: #000;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 10px;
-            background: var(--dark);
-            box-shadow: 0 4px 15px rgba(255, 195, 0, 0.3); /* Sombra ajustada para o novo primary */
-            overflow: hidden;
         }
 
-        .logo-image {
-            width: 100%; /* Ajustado para preencher a moldura, supondo que a logo real é circular ou transparente */
-            height: 100%;
-            object-fit: cover; 
-            border-radius: 50%;
-            display: block;
-        }
+        .brand-badge img { width: 100%; height: 100%; object-fit: cover; }
 
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.8em;
-            font-weight: 800;
-            color: var(--primary); /* Título em Amarelo Gema */
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
-            letter-spacing: 1px;
-            margin-bottom: 0;
+            font-size: 2rem;
+            color: var(--primary);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            margin-bottom: 5px;
         }
 
-        .subtitle {
-            font-size: 0.9em;
-            color: rgba(255, 255, 255, 0.7);
-            margin-top: 5px;
-            font-weight: 500;
-            letter-spacing: 0.5px;
+        .subtitle { font-size: 0.9rem; color: rgba(255,255,255,0.8); letter-spacing: 1px; text-transform: uppercase; }
+
+        /* --- STICKY CATEGORY NAV --- */
+        .category-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: var(--border);
+            padding: 15px 0;
+            white-space: nowrap;
+            overflow-x: auto;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .category-nav::-webkit-scrollbar { display: none; }
+
+        .nav-wrapper { padding: 0 20px; display: flex; gap: 15px; }
+
+        .nav-item {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
         }
 
-        .content {
-            padding: 25px 20px;
-            background: var(--light); /* Fundo escuro do conteúdo */
-            min-height: calc(100vh - 120px); /* Garante que o fundo escuro do conteúdo cubra bem a tela */
-            border-top-left-radius: 30px;
-            border-top-right-radius: 30px;
+        .nav-item.active {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--primary);
+            border-color: rgba(212, 175, 55, 0.3);
         }
 
-        .section {
-            margin-bottom: 30px;
-            background: var(--dark); /* Seções mais escuras */
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px var(--shadow);
+        /* --- CONTENT GRID --- */
+        .container { padding: 20px; max-width: 800px; margin: 0 auto; }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0 20px;
         }
 
         .section-title {
-            color: var(--primary); 
-            font-size: 1.2em;
-            margin-bottom: 18px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--text-main);
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 24px;
+            width: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .info-badge {
+            font-size: 0.75rem;
+            background: #252525;
+            padding: 4px 10px;
+            border-radius: 8px;
+            color: var(--primary);
+        }
+
+        /* --- SIZE CARDS --- */
+        .size-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .size-card {
+            background: var(--bg-card);
+            border: var(--border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .size-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--primary) 0%, transparent 100%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .size-card.selected {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.15);
+        }
+        
+        .size-card.selected::before { opacity: 0.1; }
+
+        .size-icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+        .size-name { font-weight: 700; font-size: 1.1rem; display: block; margin-bottom: 5px; }
+        .size-price { color: var(--primary); font-weight: 800; font-size: 1.2rem; }
+        .size-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; }
+
+        /* --- MENU ITEM CARDS (Modern Grid) --- */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Responsivo */
+            gap: 16px;
+        }
+
+        .menu-item {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: var(--border);
+            position: relative;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-item-img-box {
+            height: 120px;
+            width: 100%;
+            position: relative;
+            background: #111; /* Cor de fundo caso a imagem não carregue */
+        }
+
+        .menu-item-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .menu-item:hover .menu-item-img { transform: scale(1.05); }
+
+        .menu-item-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding-bottom: 12px;
-            border-bottom: 3px solid var(--secondary); /* Borda em Vermelho Pimenta */
-            font-weight: 700;
-            letter-spacing: 0.5px;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition);
+            backdrop-filter: blur(2px);
         }
 
-        .size-cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 15px;
-        }
-
-        .size-card, .delivery-card {
-            background: var(--light); /* Fundo claro para o card */
-            color: var(--white);
-            padding: 18px;
-            border-radius: 12px;
-            border: 2px solid var(--gray);
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 10px var(--shadow);
-            min-height: 110px;
+        .menu-item-content {
+            padding: 12px;
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
-        
-        .size-card:hover, .delivery-card:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 20px var(--shadow-lg);
-            border-color: var(--secondary);
+
+        .menu-item-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+            line-height: 1.3;
         }
 
-        .size-card.selected, .delivery-card.selected {
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%); /* Gradiente de Vermelho para Laranja */
-            border-color: var(--primary); /* Forte contraste com Amarelo Gema */
-            color: var(--dark); /* Texto escuro na seleção clara */
-            box-shadow: 0 8px 25px rgba(212, 61, 26, 0.6); /* Sombra ajustada para o novo secondary */
-            transform: scale(1.08) rotate(1deg);
-            animation: pulse-button 2s infinite;
-        }
-
-        .size-card.selected h3, .size-card.selected p, .delivery-card.selected h3, .delivery-card.selected p {
-            color: var(--dark);
-            text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.8);
-        }
-
-        .size-card h3, .delivery-card h3 {
-            font-size: 1.1em;
-            margin-bottom: 8px;
+        .menu-item-price {
+            color: var(--primary);
             font-weight: 700;
+            font-size: 0.9rem;
+            margin-top: 8px;
         }
 
-        .size-card .price, .delivery-card .price {
-            font-size: 1.4em;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            color: var(--primary); /* Preço em Amarelo Gema */
-        }
-        
-        .size-card.selected .price, .delivery-card.selected .price {
-             color: var(--dark);
-        }
-
-
-        .menu-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .toggle-option {
-            background: var(--light); /* Fundo claro para a opção */
-            padding: 14px 16px;
-            border-radius: 10px;
-            border: 2px solid var(--gray);
-            cursor: pointer;
-            color: var(--white);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            box-shadow: 0 2px 8px var(--shadow);
-            font-size: 0.9em;
-            font-weight: 500;
-        }
-
-        .toggle-option:hover {
-            border-color: var(--secondary);
-            box-shadow: 0 4px 12px rgba(212, 61, 26, 0.2); /* Sombra ajustada */
-            transform: translateY(-1px);
-        }
-
-        .toggle-option.selected {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--secondary) 100%); /* Gradiente de Laranja para Vermelho */
+        /* Estado Selecionado */
+        .menu-item.selected {
             border-color: var(--primary);
-            color: var(--dark); /* Texto escuro na seleção clara */
-            box-shadow: 0 4px 15px rgba(212, 61, 26, 0.5); /* Sombra ajustada */
-            transform: scale(1.05);
-            position: relative;
-            z-index: 10;
+            background: var(--bg-card-highlight);
         }
+
+        .menu-item.selected .menu-item-overlay { opacity: 1; }
         
-        .toggle-option.selected::after {
-            content: '✔';
-            position: absolute;
-            right: -8px;
-            top: -8px;
-            background: var(--primary); /* Sinalizador em Amarelo Gema */
-            color: var(--dark);
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            font-size: 14px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 2px solid var(--dark);
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-        }
-
-        .toggle-switch {
-            width: 32px;
-            height: 18px;
-            background: var(--gray);
-            border-radius: 9px;
-            position: relative;
-            transition: background 0.3s;
-            flex-shrink: 0;
-        }
-
-        .toggle-switch::before {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 14px;
-            height: 14px;
-            background: var(--white);
-            border-radius: 50%;
-            transition: transform 0.3s;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .toggle-option.selected .toggle-switch {
+        .check-icon {
+            width: 40px;
+            height: 40px;
             background: var(--primary);
-        }
-
-        .toggle-option.selected .toggle-switch::before {
-            transform: translateX(14px);
-            background: var(--dark); /* Botão interno escuro */
-        }
-
-        .extra-price {
-            font-size: 0.8em;
-            color: var(--primary);
-            margin-left: 5px;
-            font-weight: 700;
-        }
-        
-        .toggle-option.selected .extra-price {
-            color: var(--dark);
-        }
-
-        .summary {
-            background: var(--dark);
-            padding: 25px;
-            border-radius: 15px;
-            margin-top: 30px;
-            border: 3px solid var(--primary); /* Borda de destaque em Amarelo Gema */
-            box-shadow: 0 8px 25px var(--shadow-lg);
-        }
-
-        .summary h3 {
-            color: var(--primary);
-            font-size: 1.3em;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 3px solid var(--secondary); /* Separador em Vermelho Pimenta */
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            color: var(--white); /* Texto do resumo em branco/claro */
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
-            font-size: 0.9em;
-            font-weight: 500;
-        }
-
-        .summary-total {
-            display: flex;
-            justify-content: space-between;
-            padding: 20px 0 0;
-            font-size: 1.6em;
-            font-weight: 800;
-            color: var(--primary); /* Total em Amarelo Gema */
-            margin-top: 15px;
-            border-top: 3px solid var(--secondary);
-        }
-
-        .summary-payment-btn {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .payment-button {
-            flex-grow: 1;
-            padding: 12px 15px;
-            border-radius: 10px;
-            font-size: 0.9em;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 12px var(--shadow);
-            text-decoration: none;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            letter-spacing: 0.5px;
+            color: #000;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+
+        /* --- STICKY CART FOOTER (App Style) --- */
+        .sticky-cart {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            z-index: 900;
+            transform: translateY(150%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .sticky-cart.visible { transform: translateY(0); }
+
+        .cart-info { display: flex; flex-direction: column; }
+        .cart-total-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+        .cart-total-value { font-size: 1.4rem; font-weight: 800; color: var(--primary); font-family: 'Playfair Display', serif; }
+
+        .btn-finish {
+            background: var(--primary);
+            color: #000;
             border: none;
+            padding: 14px 28px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+        
+        .btn-finish:disabled { background: #444; color: #888; box-shadow: none; cursor: not-allowed; }
+
+        /* --- MODAL (Checkout) --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: flex-end; /* Mobile sheet style */
+        }
+        
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s; }
+
+        .modal-content {
+            background: #1a1a1a;
+            width: 100%;
+            max-width: 600px;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            padding: 30px 25px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
 
-        .payment-button:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 6px 18px var(--shadow-lg);
+        @media (min-width: 768px) {
+            .modal-overlay { align-items: center; }
+            .modal-content { border-radius: 30px; }
         }
 
-        .payment-button.picpay {
-            background: linear-gradient(135deg, #21c25e 0%, #1aa54b 100%);
-            color: var(--white);
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .modal-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--primary); }
+        .close-modal { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
+
+        .checkout-section { margin-bottom: 25px; }
+        .checkout-label { display: block; margin-bottom: 10px; color: var(--primary-light); font-weight: 600; font-size: 0.9rem; }
+
+        /* Inputs Modernos */
+        .input-group input, .input-group textarea {
+            width: 100%;
+            background: #252525;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .input-group input:focus, .input-group textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.1);
         }
 
-        .payment-button.pix {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); /* Pix em Amarelo Gema/Laranja */
-            color: var(--dark);
+        /* Delivery Options */
+        .delivery-options { display: flex; gap: 10px; }
+        .delivery-opt {
+            flex: 1;
+            padding: 15px;
+            background: #252525;
+            border: 1px solid #333;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .delivery-opt.selected { background: rgba(212, 175, 55, 0.1); border-color: var(--primary); color: var(--primary); }
+
+        /* Order Summary in Modal */
+        .order-summary-box {
+            background: #000;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px dashed #333;
+        }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; color: #ccc; }
+        .summary-row.total { 
+            border-top: 1px solid #333; 
+            padding-top: 15px; 
+            margin-top: 10px; 
+            font-size: 1.2rem; 
+            font-weight: 800; 
+            color: var(--primary); 
         }
 
         .btn-whatsapp {
-            background: linear-gradient(135deg, var(--success) 0%, #1ea952 100%);
-            color: var(--white);
+            width: 100%;
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: #fff;
+            padding: 18px;
+            border-radius: 16px;
             border: none;
-            padding: 18px 25px;
-            font-size: 1.1em;
-            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             cursor: pointer;
-            width: 100%;
-            margin-top: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            transition: all 0.3s;
-            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.3);
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-        
-        /* Mantive a lógica de alerta do seu código */
-        .alert-message {
-            background: linear-gradient(135deg, var(--danger) 0%, #c0392b 100%); 
-            color: var(--white);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-            border-left: 5px solid #a93226;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
-            letter-spacing: 0.3px;
+            margin-top: 20px;
+            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.2);
         }
 
-        .address-input-group {
-            margin-top: 18px;
-            padding: 15px;
-            border: 2px solid var(--gray);
-            border-radius: 10px;
-            background: var(--light);
-            box-shadow: 0 2px 8px var(--shadow);
-        }
-
-        .address-input-group label {
-            display: block;
-            font-size: 0.95em;
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--glass);
+            padding: 12px 24px;
+            border-radius: 30px;
+            border: 1px solid var(--primary);
             color: var(--primary);
-            margin-bottom: 8px;
             font-weight: 600;
-        }
-
-        .address-input-group input, 
-        .address-input-group textarea { /* Incluído textarea */
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            border: 2px solid var(--gray);
-            border-radius: 8px;
-            font-size: 1em;
-            color: var(--white);
-            background: var(--dark);
-            font-family: 'Inter', sans-serif;
-            transition: border 0.3s;
-            resize: vertical; /* Permite redimensionamento vertical */
-            min-height: 80px; /* Altura mínima para o campo de notas */
-        }
-
-        .address-input-group input:focus,
-        .address-input-group textarea:focus {
-            outline: none;
-            border-color: var(--secondary);
-            box-shadow: 0 0 0 3px rgba(212, 61, 26, 0.1); /* Sombra ajustada */
-        }
-        
-        .map-link {
+            z-index: 2000;
+            transition: transform 0.3s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
             display: flex;
             align-items: center;
-            justify-content: center;
-            margin-top: 15px;
-            padding: 10px 15px;
-            background: var(--accent);
-            color: var(--dark);
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 700;
-            transition: background 0.2s;
+            gap: 10px;
         }
-        .map-link:hover {
-            background: var(--primary);
-        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
 
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-        @media (max-width: 450px) {
-            .phone-container {
-                border-radius: 0;
-            }
-            body {
-                padding: 0;
-            }
-            .content {
-                padding: 20px 15px;
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="phone-container">
-        <header>
-            <div class="logo">
-                <div class="logo-icon">
-                    <img src="img/victorino.jpg" alt="Logo Victorino.eng" class="logo-image">
-                </div>
-                <h1>Cardápio Digital</h1>
-                <p class="subtitle" style="font-size: 0.85em; font-weight: 600;">VICTORINO.ENG</p>
-            </div>
-            <p class="subtitle">Monte sua marmita do seu jeito! 🍽️</p>
-        </header>
 
-        <div class="content">
-            <div class="section">
-                <h2 class="section-title">📦 Escolha o Tamanho</h2>
-                <div class="size-cards-grid">
-                    <div class="size-card" data-size="pequena" data-price="15.00" onclick="selectSize(this)">
-                        <h3>Pequena 🤏</h3>
-                        <p class="price">R$ 15,00</p>
-                        <p style="font-size: 0.75em; opacity: 0.8;">(Máx. 1 Carne)</p>
-                    </div>
-                    <div class="size-card" data-size="grande" data-price="18.00" onclick="selectSize(this)">
-                        <h3>Grande 💪</h3>
-                        <p class="price">R$ 18,00</p>
-                        <p style="font-size: 0.75em; opacity: 0.8;">(Máx. 2 Carnes)</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="alert-message" id="size-warning" style="display: none;">
-                ⚠️ Por favor, escolha o tamanho da marmita primeiro.
-            </div>
+    <div id="toast" class="toast"><i class="fas fa-check-circle"></i> Item Atualizado!</div>
 
-            <div class="section" id="carnes-section">
-                <h2 class="section-title">🍖 Carnes <span id="carne-limit" style="font-size: 0.85em; color: var(--secondary);"></span></h2>
-                <div class="menu-grid">
-                    <div class="toggle-option" data-type="carne" data-value="Frango com Quiabo">
-                        <span>🍗 Frango c/ Quiabo</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="carne" data-value="Suíno Acebolado">
-                        <span>🥓 Suíno Acebolado</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="carne" data-value="Frango Empanado">
-                        <span>🐥 Frango Empanado</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="carne" data-value="Frango Grelhado">
-                        <span>🐓 Frango Grelhado</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="carne" data-value="Bife Bovino">
-                        <span>🥩 Bife Bovino</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="carne" data-value="Picadinho de Carne">
-                        <span>🍲 Picadinho</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="carne" data-value="Costela Bovina">
-                        <span>🦴 Costela Bovina</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="carne" data-value="Linguiça Calabresa">
-                        <span>🌭 Linguiça</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                </div>
+    <header class="hero">
+        <div class="hero-content">
+            <div class="brand-badge">
+                <img src="img/victorino.jpg" alt="Logo" onerror="this.style.display='none'; this.parentElement.style.background='var(--primary)'">
             </div>
+            <h1>Victorino.eng</h1>
+            <p class="subtitle">Alta Gastronomia na sua Marmita</p>
+        </div>
+    </header>
 
-            <div class="section">
-                <h2 class="section-title">🍚 Guarnições</h2>
-                <div class="menu-grid">
-                    <div class="toggle-option" data-type="guarnicao" data-value="Arroz Branco">
-                        <span>🍚 Arroz Branco</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="guarnicao" data-value="Arroz Integral">
-                        <span>🌾 Arroz Integral</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="guarnicao" data-value="Feijão Caldo">
-                        <span>🥣 Feijão Caldo</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="guarnicao" data-value="Feijão Tropeiro">
-                        <span>🥓 Feijão Tropeiro</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="guarnicao" data-value="Macarrão ao Sugo">
-                        <span>🍝 Macarrão</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="guarnicao" data-value="Purê de Batata">
-                        <span>🥔 Purê de Batata</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="guarnicao" data-value="Farofa">
-                        <span>🌰 Farofa</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="guarnicao" data-value="Polenta">
-                        <span>🍮 Polenta</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                </div>
-            </div>
+    <nav class="category-nav">
+        <div class="nav-wrapper">
+            <div class="nav-item active" onclick="scrollToSection('tamanho')">Tamanho</div>
+            <div class="nav-item" onclick="scrollToSection('carnes')">Carnes</div>
+            <div class="nav-item" onclick="scrollToSection('guarnicoes')">Guarnições</div>
+            <div class="nav-item" onclick="scrollToSection('saladas')">Saladas</div>
+            <div class="nav-item" onclick="scrollToSection('acompanhamentos')">Extras</div>
+            <div class="nav-item" onclick="scrollToSection('bebidas')">Bebidas</div>
+        </div>
+    </nav>
 
-            <div class="section">
-                <h2 class="section-title">🥗 Acompanhamentos</h2>
-                <div class="menu-grid">
-                    <div class="toggle-option" data-type="acompanhamento" data-value="Tomate com Cebola">
-                        <span>🍅 Tomate c/ Cebola</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="acompanhamento" data-value="Vinagrete">
-                        <span>🌶️ Vinagrete</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="acompanhamento" data-value="Repolho com Tomate">
-                        <span>🥬 Repolho</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="acompanhamento" data-value="Macarronese">
-                        <span>🥄 Macarronese</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="acompanhamento" data-value="Batata Frita" data-extra-price="3.00">
-                        <span>🍟 Batata Frita</span>
-                        <span class="extra-price">+R$ 3,00</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="acompanhamento" data-value="Mandioca Frita" data-extra-price="3.00">
-                        <span>🍠 Mandioca Frita</span>
-                        <span class="extra-price">+R$ 3,00</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="acompanhamento" data-value="Ovos Fritos" data-extra-price="2.00">
-                        <span>🍳 Ovos Fritos</span>
-                        <span class="extra-price">+R$ 2,00</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="acompanhamento" data-value="Banana à Milanesa" data-extra-price="3.50">
-                        <span>🍌 Banana Milanesa</span>
-                        <span class="extra-price">+R$ 3,50</span>
-                        <div class="toggle-switch"></div>
-                    </div>
+    <main class="container">
+        
+        <section id="tamanho-section" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Escolha o Tamanho</h2>
+                <span class="info-badge">Obrigatório</span>
+            </div>
+            <div class="size-grid">
+                <div class="size-card" onclick="selectSize('pequena', 15.00, 1, this)">
+                    <span class="size-icon">🥣</span>
+                    <span class="size-name">Pequena</span>
+                    <span class="size-price">R$ 15,00</span>
+                    <p class="size-desc">Ideal para apetite leve.<br>Máx. 1 Carne</p>
+                </div>
+                <div class="size-card" onclick="selectSize('grande', 18.00, 2, this)">
+                    <span class="size-icon">🥘</span>
+                    <span class="size-name">Grande</span>
+                    <span class="size-price">R$ 18,00</span>
+                    <p class="size-desc">Para quem tem fome!<br>Máx. 2 Carnes</p>
                 </div>
             </div>
-            
-            <div class="section">
-                <h2 class="section-title">🥬 Saladas</h2>
-                <div class="menu-grid">
-                    <div class="toggle-option" data-type="salada" data-value="Alface">
-                        <span>🥬 Alface</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="salada" data-value="Tomate">
-                        <span>🍅 Tomate</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="salada" data-value="Cenoura Ralada">
-                        <span>🥕 Cenoura</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="salada" data-value="Pepino">
-                        <span>🥒 Pepino</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="salada" data-value="Beterraba">
-                        <span>🟣 Beterraba</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="salada" data-value="Salada Cozida">
-                        <span>🥗 Salada Cozida</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="salada" data-value="Rúcula">
-                        <span>🌿 Rúcula</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="salada" data-value="Couve Refogada">
-                        <span>🥬 Couve</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="section">
-                <h2 class="section-title">🥤 Bebidas Geladas</h2>
-                <div class="menu-grid">
-                    <div class="toggle-option" data-type="bebida" data-value="Suco Natural 300ml" data-extra-price="6.00">
-                        <span>🍊 Suco 300ml</span>
-                        <span class="extra-price">+R$ 6,00</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="bebida" data-value="Suco Natural 500ml" data-extra-price="8.00">
-                        <span>🍹 Suco 500ml</span>
-                        <span class="extra-price">+R$ 8,00</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="bebida" data-value="Refrigerante Lata" data-extra-price="5.00">
-                        <span>🥤 Refri Lata</span>
-                        <span class="extra-price">+R$ 5,00</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="bebida" data-value="Refrigerante 600ml" data-extra-price="7.00">
-                        <span>💧 Refri 600ml</span>
-                        <span class="extra-price">+R$ 7,00</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="bebida" data-value="Refrigerante 1L" data-extra-price="10.00">
-                        <span>🍾 Refri 1L</span>
-                        <span class="extra-price">+R$ 10,00</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="bebida" data-value="Água Mineral" data-extra-price="3.00">
-                        <span>🧊 Água Mineral</span>
-                        <span class="extra-price">+R$ 3,00</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="bebida" data-value="Juninho (Guaraná)" data-extra-price="4.00">
-                        <span>🌱 Juninho</span>
-                        <span class="extra-price">+R$ 4,00</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                    <div class="toggle-option" data-type="bebida" data-value="Chá Gelado" data-extra-price="5.00">
-                        <span>🍵 Chá Gelado</span>
-                        <span class="extra-price">+R$ 5,00</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                </div>
-            </div>
+        </section>
 
-            <div class="section">
-                <h2 class="section-title">🚚 Forma de Recebimento</h2>
-                <div class="size-cards-grid">
-                    <div class="size-card delivery-card" data-type="delivery" data-value="Retirada na Loja" data-price="0.00" onclick="selectDelivery(this)">
-                        <h3>Retirar 🏃</h3>
-                        <p class="price">GRÁTIS</p>
+        <section id="carnes-section" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Carnes Premium</h2>
+                <span class="info-badge" id="carne-limit-badge">Selecione o Tamanho</span>
+            </div>
+            <div class="menu-grid">
+                <div class="menu-item" onclick="toggleItem('carne', 'Frango com Quiabo', 0, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/frango-quiabo.jpg" class="menu-item-img" alt="Frango">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
                     </div>
-                    <div class="size-card delivery-card" data-type="delivery" data-value="Entrega" data-price="5.00" onclick="selectDelivery(this)">
-                        <h3>Entrega 🛵</h3>
-                        <p class="price">+R$ 5,00</p>
+                    <div class="menu-item-content">
+                        <h3 class="menu-item-title">Frango com Quiabo</h3>
+                    </div>
+                </div>
+
+                <div class="menu-item" onclick="toggleItem('carne', 'Bife Bovino', 0, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/bife-bovino.jpg" class="menu-item-img" alt="Bife">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
+                    </div>
+                    <div class="menu-item-content">
+                        <h3 class="menu-item-title">Bife Acebolado</h3>
+                    </div>
+                </div>
+
+                <div class="menu-item" onclick="toggleItem('carne', 'Frango Empanado', 0, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/frango-empanado.jpg" class="menu-item-img" alt="Frango Frito">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
+                    </div>
+                    <div class="menu-item-content">
+                        <h3 class="menu-item-title">Frango Empanado</h3>
+                    </div>
+                </div>
+
+                <div class="menu-item" onclick="toggleItem('carne', 'Costela Bovina', 0, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/costela-bovina.jpg" class="menu-item-img" alt="Costela">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
+                    </div>
+                    <div class="menu-item-content">
+                        <h3 class="menu-item-title">Costela Bovina</h3>
                     </div>
                 </div>
                 
-                <div class="address-input-group" id="address-group" style="display: none;">
-                    <label for="delivery-address">📍 Endereço Completo:</label>
-                    <input type="text" id="delivery-address" placeholder="Rua, Número, Bairro, Ponto de Referência..." oninput="updateAddress(this.value)">
+                <div class="menu-item" onclick="toggleItem('carne', 'Suíno Acebolado', 0, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/suino-acebolado.jpg" class="menu-item-img" alt="Suino">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
+                    </div>
+                    <div class="menu-item-content">
+                        <h3 class="menu-item-title">Suíno Acebolado</h3>
+                    </div>
                 </div>
-                
-                <a href="#" target="_blank" id="map-link-btn" class="map-link" style="display: none;">
-                    🗺️ Ver Local de Retirada (Google Maps)
-                </a>
-                
             </div>
-            
-            <div class="section">
-                <h2 class="section-title">📝 Notas e Observações</h2>
-                <div class="address-input-group">
-                    <label for="order-notes">Alguma observação especial? (Ex: "Sem sal", "Trocar arroz")</label>
-                    <textarea id="order-notes" placeholder="Digite aqui suas observações sobre o pedido..." oninput="updateNotes(this.value)"></textarea>
+        </section>
+
+        <section id="guarnicoes-section" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Guarnições</h2>
+                <span class="info-badge">À vontade</span>
+            </div>
+            <div class="menu-grid">
+                <div class="menu-item" onclick="toggleItem('guarnicao', 'Arroz Branco', 0, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/arroz-branco.jpg" class="menu-item-img">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
+                    </div>
+                    <div class="menu-item-content"><h3 class="menu-item-title">Arroz Branco</h3></div>
+                </div>
+                <div class="menu-item" onclick="toggleItem('guarnicao', 'Feijão Caldo', 0, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/feijao-caldo.jpg" class="menu-item-img">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
+                    </div>
+                    <div class="menu-item-content"><h3 class="menu-item-title">Feijão Caldo</h3></div>
+                </div>
+                <div class="menu-item" onclick="toggleItem('guarnicao', 'Feijão Tropeiro', 0, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/feijao-tropeiro.jpg" class="menu-item-img">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
+                    </div>
+                    <div class="menu-item-content"><h3 class="menu-item-title">Feijão Tropeiro</h3></div>
+                </div>
+                <div class="menu-item" onclick="toggleItem('guarnicao', 'Macarrão ao Sugo', 0, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/macarrao.jpg" class="menu-item-img">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
+                    </div>
+                    <div class="menu-item-content"><h3 class="menu-item-title">Macarrão</h3></div>
+                </div>
+                <div class="menu-item" onclick="toggleItem('guarnicao', 'Farofa', 0, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/farofa.jpg" class="menu-item-img">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
+                    </div>
+                    <div class="menu-item-content"><h3 class="menu-item-title">Farofa Crocante</h3></div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="saladas-section" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Saladas Frescas</h2>
+            </div>
+            <div class="menu-grid">
+                <div class="menu-item" onclick="toggleItem('salada', 'Alface', 0, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/alface.jpg" class="menu-item-img">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
+                    </div>
+                    <div class="menu-item-content"><h3 class="menu-item-title">Alface</h3></div>
+                </div>
+                <div class="menu-item" onclick="toggleItem('salada', 'Tomate', 0, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/tomate.jpg" class="menu-item-img">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
+                    </div>
+                    <div class="menu-item-content"><h3 class="menu-item-title">Tomate</h3></div>
+                </div>
+                <div class="menu-item" onclick="toggleItem('salada', 'Beterraba', 0, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/beterraba.jpg" class="menu-item-img">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
+                    </div>
+                    <div class="menu-item-content"><h3 class="menu-item-title">Beterraba</h3></div>
+                </div>
+                 <div class="menu-item" onclick="toggleItem('salada', 'Salada Cozida', 0, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/legumes-cozidos.jpg" class="menu-item-img">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
+                    </div>
+                    <div class="menu-item-content"><h3 class="menu-item-title">Legumes Cozidos</h3></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="acompanhamentos-section" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Extras Especiais</h2>
+            </div>
+            <div class="menu-grid">
+                <div class="menu-item" onclick="toggleItem('acompanhamento', 'Batata Frita', 3.00, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/batata-frita.jpg" class="menu-item-img">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
+                    </div>
+                    <div class="menu-item-content">
+                        <h3 class="menu-item-title">Batata Frita</h3>
+                        <p class="menu-item-price">+ R$ 3,00</p>
+                    </div>
+                </div>
+                <div class="menu-item" onclick="toggleItem('acompanhamento', 'Ovo Frito', 2.00, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/ovo-frito.jpg" class="menu-item-img">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
+                    </div>
+                    <div class="menu-item-content">
+                        <h3 class="menu-item-title">Ovo Frito</h3>
+                        <p class="menu-item-price">+ R$ 2,00</p>
+                    </div>
+                </div>
+                 <div class="menu-item" onclick="toggleItem('acompanhamento', 'Banana Milanesa', 3.50, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/banana-milanesa.jpg" class="menu-item-img">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
+                    </div>
+                    <div class="menu-item-content">
+                        <h3 class="menu-item-title">Banana Milanesa</h3>
+                        <p class="menu-item-price">+ R$ 3,50</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="bebidas-section" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Bebidas</h2>
+            </div>
+            <div class="menu-grid">
+                <div class="menu-item" onclick="toggleItem('bebida', 'Coca Cola Lata', 5.00, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/refrigerante-lata.jpg" class="menu-item-img">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
+                    </div>
+                    <div class="menu-item-content">
+                        <h3 class="menu-item-title">Refrigerante Lata</h3>
+                        <p class="menu-item-price">+ R$ 5,00</p>
+                    </div>
+                </div>
+                <div class="menu-item" onclick="toggleItem('bebida', 'Suco Natural', 6.00, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/suco-natural.jpg" class="menu-item-img">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
+                    </div>
+                    <div class="menu-item-content">
+                        <h3 class="menu-item-title">Suco 300ml</h3>
+                        <p class="menu-item-price">+ R$ 6,00</p>
+                    </div>
+                </div>
+                <div class="menu-item" onclick="toggleItem('bebida', 'Água', 3.00, this)">
+                    <div class="menu-item-img-box">
+                        <img src="img/agua-mineral.jpg" class="menu-item-img">
+                        <div class="menu-item-overlay"><div class="check-icon"><i class="fas fa-check"></i></div></div>
+                    </div>
+                    <div class="menu-item-content">
+                        <h3 class="menu-item-title">Água Mineral</h3>
+                        <p class="menu-item-price">+ R$ 3,00</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div class="sticky-cart" id="sticky-cart">
+        <div class="cart-info">
+            <span class="cart-total-label">Total do Pedido</span>
+            <span class="cart-total-value" id="cart-total">R$ 0,00</span>
+        </div>
+        <button class="btn-finish" id="btn-review" onclick="openCheckoutModal()" disabled>
+            Revisar <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+
+    <div class="modal-overlay" id="checkout-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Finalizar Pedido</h3>
+                <button class="close-modal" onclick="closeCheckoutModal()">&times;</button>
+            </div>
+
+            <div class="checkout-section">
+                <label class="checkout-label">Como deseja receber?</label>
+                <div class="delivery-options">
+                    <div class="delivery-opt" onclick="setDelivery('retirada', 0, this)">
+                        <i class="fas fa-store"></i><br>Retirar<br><span style="font-size: 0.8em; color: var(--primary);">Grátis</span>
+                    </div>
+                    <div class="delivery-opt" onclick="setDelivery('entrega', 5.00, this)">
+                        <i class="fas fa-motorcycle"></i><br>Entrega<br><span style="font-size: 0.8em; color: var(--primary);">+ R$ 5,00</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="summary">
-                <h3>📋 Resumo do Pedido</h3>
-                <div id="summary-content">
-                    <p style="color: #95a5a6; text-align: center; font-style: italic; padding: 15px 0;">Selecione o tamanho e os itens para visualizar o resumo.</p>
-                </div>
-                
-                <div class="summary-total" style="display: none;" id="total-section">
-                    <span>TOTAL:</span>
-                    <span id="total-price-display">R$ 0,00</span>
-                </div>
-                
-                <div class="summary-payment-btn">
-                    <a href="#" target="_blank" class="payment-button picpay">
-                        💚 PicPay
-                    </a>
-                    <a href="#" class="payment-button pix">
-                        💳 PIX
-                    </a>
+            <div class="checkout-section" id="address-box" style="display:none;">
+                <label class="checkout-label">Endereço de Entrega</label>
+                <div class="input-group">
+                    <input type="text" id="address-input" placeholder="Rua, Número, Bairro e Referência">
                 </div>
             </div>
 
-            <button class="btn-whatsapp" onclick="sendWhatsApp()" id="whatsappBtn" disabled>
-                <span style="font-size: 24px;">📱</span>
-                Finalizar Pedido pelo WhatsApp
+            <div class="checkout-section">
+                <label class="checkout-label">Observações</label>
+                <div class="input-group">
+                    <textarea id="notes-input" rows="2" placeholder="Ex: Sem cebola, capricha no feijão..."></textarea>
+                </div>
+            </div>
+
+            <div class="checkout-section">
+                <label class="checkout-label">Resumo</label>
+                <div class="order-summary-box" id="modal-summary">
+                    </div>
+            </div>
+
+            <button class="btn-whatsapp" onclick="sendToWhatsApp()">
+                <i class="fab fa-whatsapp" style="font-size: 1.4rem;"></i> Enviar Pedido
             </button>
+            
+             <p style="text-align: center; margin-top: 15px; font-size: 0.8rem; color: #666;">
+                 Pagamento via Pix ou PicPay na confirmação.
+             </p>
         </div>
     </div>
 
     <script>
+        /* --- ESTADO DO PEDIDO --- */
         let order = {
             size: null,
-            basePrice: 0.00,
+            basePrice: 0,
             maxCarnes: 0,
-            deliveryOption: null,
-            deliveryCost: 0.00,
-            deliveryAddress: '',
-            orderNotes: '', // Novo: Notas do pedido
-            // Apenas itens sem preço extra são armazenados nas arrays abaixo.
             carnes: [],
             guarnicoes: [],
             saladas: [],
-            totalPrice: 0.00
+            extras: [], // Acompanhamentos e bebidas
+            deliveryType: null,
+            deliveryCost: 0,
+            address: '',
+            notes: ''
         };
 
-        // --- Utility Functions ---
+        const WHATSAPP_NUMBER = "5527999064068"; // Seu número
 
-        // Função para formatar moeda em BRL
-        const formatBRL = (value) => new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-        }).format(value);
-
-        // Get DOM elements
-        const SIZE_WARNING = document.getElementById('size-warning');
-        const CARNE_LIMIT = document.getElementById('carne-limit');
-        const SUMMARY_CONTENT = document.getElementById('summary-content');
-        const TOTAL_SECTION = document.getElementById('total-section');
-        const TOTAL_PRICE_DISPLAY = document.getElementById('total-price-display');
-        const WHATSAPP_BTN = document.getElementById('whatsappBtn');
-        const ADDRESS_GROUP = document.getElementById('address-group');
-        const ADDRESS_INPUT = document.getElementById('delivery-address');
-        const MAP_LINK_BTN = document.getElementById('map-link-btn');
-        const ORDER_NOTES_INPUT = document.getElementById('order-notes'); // Novo
-
-        // Configuração de Contato e Pagamento (Centralizado)
-        const WHATSAPP_NUMBER = "5527999064068";
-        const PIX_KEY = "27999064068"; // Chave PIX
-        const PICPAY_USER = "alexgoncalves"; // Usuário PicPay (para picpay.me/usuario)
-        
-        // NOVO: Link do Google Maps da Loja (MUDAR PARA O SEU ENDEREÇO REAL!)
-        const GOOGLE_MAPS_LINK = "https://maps.app.goo.gl/XXXXXXXXXXXXXXXXXXXX"; 
-        MAP_LINK_BTN.href = GOOGLE_MAPS_LINK;
-
-        // --- Core Functions ---
-
-        function selectDelivery(element) {
-            const option = element.getAttribute('data-value');
-            const cost = parseFloat(element.getAttribute('data-price'));
-            
-            document.querySelectorAll('.delivery-card').forEach(card => card.classList.remove('selected'));
-            element.classList.add('selected');
-            
-            order.deliveryOption = option;
-            order.deliveryCost = cost;
-            
-            if (option === 'Entrega') {
-                ADDRESS_GROUP.style.display = 'block';
-                MAP_LINK_BTN.style.display = 'none';
-                ADDRESS_INPUT.setAttribute('required', 'required');
-            } else {
-                ADDRESS_GROUP.style.display = 'none';
-                MAP_LINK_BTN.style.display = 'flex'; // Mostrar o link do mapa
-                order.deliveryAddress = '';
-                ADDRESS_INPUT.value = '';
-                ADDRESS_INPUT.removeAttribute('required');
-            }
-            
-            updateSummary();
-        }
-
-        function updateAddress(value) {
-            order.deliveryAddress = value;
-            updateSummary();
-        }
-        
-        // Novo: Função para atualizar as notas do pedido
-        function updateNotes(value) {
-            order.orderNotes = value;
-            updateSummary();
-        }
-
-        function selectSize(element) {
-            const newSize = element.getAttribute('data-size');
-            const newPrice = parseFloat(element.getAttribute('data-price'));
-            
-            document.querySelectorAll('.size-card:not(.delivery-card)').forEach(card => card.classList.remove('selected'));
-            element.classList.add('selected');
-            
-            order.size = newSize;
-            order.basePrice = newPrice;
-            order.maxCarnes = newSize === 'grande' ? 2 : 1;
-            
-            // Ajusta o número de carnes selecionadas se o limite for excedido
-            if (order.carnes.length > order.maxCarnes) {
-                // Remove a classe 'selected' dos itens em excesso na interface
-                document.querySelectorAll('#carnes-section .toggle-option.selected').forEach((item, index) => {
-                    if (index >= order.maxCarnes) {
-                        item.classList.remove('selected');
-                    }
+        /* --- NAVEGAÇÃO --- */
+        function scrollToSection(id) {
+            // Mapping dos IDs reais
+            const map = {
+                'tamanho': 'tamanho-section',
+                'carnes': 'carnes-section',
+                'guarnicoes': 'guarnicoes-section',
+                'saladas': 'saladas-section',
+                'acompanhamentos': 'acompanhamentos-section',
+                'bebidas': 'bebidas-section'
+            };
+            const el = document.getElementById(map[id]);
+            if(el) {
+                window.scrollTo({
+                    top: el.offsetTop - 100,
+                    behavior: 'smooth'
                 });
-                // Trunca a array de carnes
-                order.carnes = order.carnes.slice(0, order.maxCarnes);
+            }
+            
+            // Atualiza visual da nav
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        /* --- LÓGICA DE SELEÇÃO --- */
+        
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        function selectSize(type, price, limit, el) {
+            // Reset visual
+            document.querySelectorAll('.size-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+
+            // Lógica
+            order.size = type;
+            order.basePrice = price;
+            order.maxCarnes = limit;
+
+            // Reset carnes se diminuir o tamanho
+            if(order.carnes.length > limit) {
+                order.carnes = [];
+                document.querySelectorAll('#carnes-section .menu-item').forEach(i => i.classList.remove('selected'));
+                alert('O tamanho mudou. Por favor, selecione as carnes novamente.');
             }
 
-            SIZE_WARNING.style.display = 'none';
-            updateSummary();
+            document.getElementById('carne-limit-badge').textContent = `Máx: ${limit} opções`;
+            updateTotal();
+            showToast(`Tamanho ${type} selecionado!`);
         }
-        
-        function toggleOption(element) {
-            const type = element.getAttribute('data-type');
-            const value = element.getAttribute('data-value');
-            const extraPrice = element.getAttribute('data-extra-price');
-            const listName = type + 's'; // Ex: 'carnes', 'guarnicoes'
 
-            if (type === 'carne' && !order.size) {
-                SIZE_WARNING.style.display = 'block';
-                setTimeout(() => SIZE_WARNING.style.display = 'none', 3000);
+        function toggleItem(category, name, price, el) {
+            // Validação de Tamanho Primeiro
+            if((category === 'carne' || category === 'guarnicao') && !order.size) {
+                alert("⚠️ Por favor, escolha o Tamanho da marmita primeiro.");
+                scrollToSection('tamanho');
                 return;
             }
 
-            if (element.classList.contains('selected')) {
-                element.classList.remove('selected');
-                if (order[listName]) {
-                    // Remove o item (ignorando emojis)
-                    const cleanValue = value.replace(/[\uD800-\uDBFF\uDC00-\uDFFF]|\uFE0F|[\u2700-\u27BF]|\u2300-\u23FF|[\u2B00-\u2BFF]|[\u203C\u2049\u2190-\u21FF\u24C2\u25AA\u25FE\u2600-\u27EF\u2900-\u2935\u2E80-\u32FF\u3400-\u4DBF\u4E00-\u9FFF]|\uFE0E|\uFFFD/g, '').trim(); 
-                    order[listName] = order[listName].filter(item => item !== cleanValue);
-                }
-            } else {
-                if (type === 'carne' && order.carnes.length >= order.maxCarnes) {
-                    alert(`⚠️ Você já selecionou o máximo de ${order.maxCarnes} carne(s) para o tamanho ${order.size.toUpperCase()}!`);
+            const isSelected = el.classList.contains('selected');
+
+            if(category === 'carne') {
+                if(!isSelected && order.carnes.length >= order.maxCarnes) {
+                    alert(`Você já atingiu o limite de ${order.maxCarnes} carne(s) para este tamanho.`);
                     return;
                 }
                 
-                element.classList.add('selected');
-                
-                // Adiciona à array APENAS o valor sem emojis
-                const cleanValue = value.replace(/[\uD800-\uDBFF\uDC00-\uDFFF]|\uFE0F|[\u2700-\u27BF]|\u2300-\u23FF|\u2B00-\u2BFF|\u203C\u2049\u2190-\u21FF\u24C2\u25AA\u25FE\u2600-\u27EF\u2900-\u2935\u2E80-\u32FF\u3400-\u4DBF\u4E00-\u9FFF]|\uFE0E|\uFFFD/g, '').trim(); 
-                if (order[listName] && (!extraPrice || (type !== 'acompanhamento' && type !== 'bebida'))) {
-                    order[listName].push(cleanValue);
+                if(isSelected) {
+                    order.carnes = order.carnes.filter(i => i !== name);
+                    el.classList.remove('selected');
+                } else {
+                    order.carnes.push(name);
+                    el.classList.add('selected');
                 }
             }
-            
-            updateSummary();
+            else if (category === 'guarnicao' || category === 'salada') {
+                const arr = category === 'guarnicao' ? order.guarnicoes : order.saladas;
+                if(isSelected) {
+                    const idx = arr.indexOf(name);
+                    if (idx > -1) arr.splice(idx, 1);
+                    el.classList.remove('selected');
+                } else {
+                    arr.push(name);
+                    el.classList.add('selected');
+                }
+            }
+            else {
+                // Extras com preço (Bebidas e Acompanhamentos)
+                if(isSelected) {
+                    order.extras = order.extras.filter(i => i.name !== name);
+                    el.classList.remove('selected');
+                } else {
+                    order.extras.push({ name: name, price: price });
+                    el.classList.add('selected');
+                }
+            }
+
+            updateTotal();
         }
 
-        // Função auxiliar para calcular e formatar itens extras (acompanhamentos/bebidas)
-        function calculateAndFormatAddons(type, title, emoji) {
-            let items = [];
-            let cost = 0;
+        function updateTotal() {
+            let total = order.basePrice;
+            order.extras.forEach(e => total += e.price);
             
-            document.querySelectorAll(`.toggle-option.selected[data-type="${type}"]`).forEach(item => {
-                const value = item.querySelector('span:not(.extra-price)').textContent.trim(); // Pega o nome COM emoji para o resumo
-                const cleanValue = item.getAttribute('data-value'); // Pega o nome SEM emoji para preço
-                const extraPrice = item.getAttribute('data-extra-price');
-                
-                if (extraPrice) {
-                    const price = parseFloat(extraPrice);
-                    cost += price;
-                    items.push({ name: value, price: price, cleanName: cleanValue });
+            // Format
+            const totalFmt = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            
+            // Update UI
+            document.getElementById('cart-total').textContent = totalFmt;
+            
+            const cart = document.getElementById('sticky-cart');
+            const btn = document.getElementById('btn-review');
+            
+            if(order.size) {
+                cart.classList.add('visible');
+                if(order.carnes.length > 0) {
+                    btn.disabled = false;
+                    btn.style.opacity = "1";
                 } else {
-                    items.push({ name: value, price: 0, cleanName: cleanValue });
+                    btn.disabled = true;
+                    btn.style.opacity = "0.5";
                 }
-            });
-            
-            let html = '';
-            if (items.length > 0) {
-                html += `<div class="summary-item" style="padding-top: 10px; font-weight: 600;"><span>${emoji} ${title}:</span><span></span></div>`;
-                items.forEach(item => {
-                    if (item.price === 0 && type !== 'acompanhamento' && type !== 'bebida') return; 
-
-                    html += `<div class="summary-item" style="padding-left: 15px;"><span>• ${item.name}</span><span class="price-detail">${item.price > 0 ? `+ ${formatBRL(item.price)}` : ''}</span></div>`;
-                });
             }
-
-            return { html, cost, names: items.map(i => i.name) }; // Retorna o nome COM emoji para o resumo
         }
 
+        /* --- MODAL & CHECKOUT --- */
 
-        function updateSummary() {
-            CARNE_LIMIT.textContent = order.size ? `(Máx. ${order.maxCarnes}, selecionada${order.carnes.length > 1 ? 's' : ''}: ${order.carnes.length})` : '';
-
-            let total = order.basePrice + order.deliveryCost;
-            let summaryHTML = '';
+        function openCheckoutModal() {
+            if(!order.size || order.carnes.length === 0) return;
             
-            const needsSize = !order.size;
-            const needsDelivery = !order.deliveryOption;
-            const needsCarne = order.carnes.length === 0;
-            const needsAddress = order.deliveryOption === 'Entrega' && !order.deliveryAddress.trim();
+            document.getElementById('checkout-modal').classList.add('active');
+            renderSummary();
+        }
 
+        function closeCheckoutModal() {
+            document.getElementById('checkout-modal').classList.remove('active');
+        }
+
+        function setDelivery(type, cost, el) {
+            document.querySelectorAll('.delivery-opt').forEach(d => d.classList.remove('selected'));
+            el.classList.add('selected');
             
-            // 1. Recebimento
-            if (order.deliveryOption) {
-                summaryHTML += `<div class="summary-item" style="font-weight: 600;"><span>🚚 ${order.deliveryOption}:</span><span class="price-detail">${order.deliveryCost > 0 ? `+ ${formatBRL(order.deliveryCost)}` : 'Grátis'}</span></div>`;
-            }
-
-            if (order.deliveryOption === 'Entrega') {
-                const addressDisplay = order.deliveryAddress.trim() || '*FALTANDO*';
-                const colorStyle = order.deliveryAddress.trim() ? '' : 'color: var(--danger); font-weight: 700;';
-                summaryHTML += `<div class="summary-item" style="padding-left: 15px; font-size: 0.8em;"><span>📍 Endereço:</span><span style="max-width: 55%; text-align: right; word-break: break-word; ${colorStyle}">${addressDisplay}</span></div>`;
-            }
+            order.deliveryType = type;
+            order.deliveryCost = cost;
             
-            // 2. Tamanho
-            if (order.size) {
-                summaryHTML += `<div class="summary-item" style="margin-top: 12px; font-weight: 600;"><span>📦 Tamanho ${order.size.charAt(0).toUpperCase() + order.size.slice(1)}</span><span class="price-detail">${formatBRL(order.basePrice)}</span></div>`;
-            }
-            
-            // 3. Carnes (o preço base já inclui as carnes)
-            if (order.carnes.length > 0) {
-                // Mapeia a lista original (sem emoji) para a lista com emoji para exibição no resumo
-                const selectedCarnes = order.carnes.map(cleanName => {
-                    const option = document.querySelector(`.toggle-option[data-value="${cleanName}"][data-type="carne"]`);
-                    return option ? option.querySelector('span:not(.extra-price)').textContent.trim() : cleanName;
-                });
-
-                summaryHTML += `<div class="summary-item"><span>🥩 Carnes (${order.carnes.length}/${order.maxCarnes}):</span><span style="text-align: right; font-size: 0.85em;">${selectedCarnes.join(', ')}</span></div>`;
-            }
-
-            // 4. Guarnições
-            if (order.guarnicoes.length > 0) {
-                 const selectedGuarnicoes = order.guarnicoes.map(cleanName => {
-                    const option = document.querySelector(`.toggle-option[data-value="${cleanName}"][data-type="guarnicao"]`);
-                    return option ? option.querySelector('span:not(.extra-price)').textContent.trim() : cleanName;
-                });
-                summaryHTML += `<div class="summary-item"><span>🍚 Guarnições:</span><span style="text-align: right; font-size: 0.85em;">${selectedGuarnicoes.join(', ')}</span></div>`;
-            }
-
-            // 5. Saladas
-            if (order.saladas.length > 0) {
-                const selectedSaladas = order.saladas.map(cleanName => {
-                    const option = document.querySelector(`.toggle-option[data-value="${cleanName}"][data-type="salada"]`);
-                    return option ? option.querySelector('span:not(.extra-price)').textContent.trim() : cleanName;
-                });
-                summaryHTML += `<div class="summary-item"><span>🥬 Saladas:</span><span style="text-align: right; font-size: 0.85em;">${selectedSaladas.join(', ')}</span></div>`;
-            }
-            
-            // 6. Acompanhamentos (com e sem preço extra)
-            const addons = calculateAndFormatAddons('acompanhamento', 'Acompanhamentos', '➕');
-            summaryHTML += addons.html;
-            total += addons.cost;
-
-            // 7. Bebidas (com preço extra)
-            const drinks = calculateAndFormatAddons('bebida', 'Bebidas', '🥤');
-            summaryHTML += drinks.html;
-            total += drinks.cost;
-            
-            // NOVO: Notas
-            if (order.orderNotes.trim()) {
-                const notesDisplay = order.orderNotes.length > 50 ? order.orderNotes.substring(0, 50) + '...' : order.orderNotes;
-                summaryHTML += `<div class="summary-item" style="padding-top: 15px; font-size: 0.8em; font-weight: 600;"><span>📝 Notas:</span><span style="max-width: 55%; text-align: right; word-break: break-word; font-style: italic;">"${notesDisplay}"</span></div>`;
-            }
-
-
-            order.totalPrice = total;
-
-            const hasMinimumRequirements = !needsSize && !needsCarne && !needsDelivery;
-            
-            if (!needsSize || !needsDelivery) {
-                SUMMARY_CONTENT.innerHTML = summaryHTML;
-                TOTAL_PRICE_DISPLAY.textContent = formatBRL(total);
-                TOTAL_SECTION.style.display = 'flex';
-                
-                // Lógica do botão
-                WHATSAPP_BTN.disabled = !hasMinimumRequirements || needsAddress;
-                
-                if (WHATSAPP_BTN.disabled) {
-                    let btnText = 'Complete as Seleções Obrigatórias';
-                    if (needsAddress) {
-                        btnText = 'Informe o Endereço para Entrega';
-                    } else if (needsSize || needsCarne || needsDelivery) {
-                        btnText = 'Complete as Seleções Obrigatórias';
-                    }
-                    WHATSAPP_BTN.innerHTML = `<span style="font-size: 24px;">⚠️</span> ${btnText}`;
-                } else {
-                    WHATSAPP_BTN.innerHTML = '<span style="font-size: 24px;">📱</span> Finalizar Pedido pelo WhatsApp';
-                }
+            const addrBox = document.getElementById('address-box');
+            if(type === 'entrega') {
+                addrBox.style.display = 'block';
             } else {
-                SUMMARY_CONTENT.innerHTML = '<p style="color: #95a5a6; text-align: center; font-style: italic; padding: 15px 0;">Selecione o tamanho e os itens para visualizar o resumo.</p>';
-                TOTAL_SECTION.style.display = 'none';
-                WHATSAPP_BTN.disabled = true;
-                WHATSAPP_BTN.innerHTML = '<span style="font-size: 24px;">📱</span> Finalizar Pedido pelo WhatsApp';
+                addrBox.style.display = 'none';
+                order.address = ''; // Clear address if pickup
             }
+            renderSummary();
         }
 
-        function sendWhatsApp() {
-            const needsAddress = order.deliveryOption === 'Entrega' && !order.deliveryAddress.trim();
-            const hasMinimumRequirements = order.size && order.carnes.length > 0 && order.deliveryOption;
-
-            if (!hasMinimumRequirements || needsAddress) {
-                alert('⚠️ Por favor, certifique-se de ter feito as seleções obrigatórias: Tamanho, pelo menos uma Carne, e a Forma de Recebimento (com endereço se for Entrega).');
-                return;
-            }
-
-            // Recalcula itens com preço extra para incluir no corpo da mensagem
-            const addons = calculateAndFormatAddons('acompanhamento', 'Acompanhamentos', '➕');
-            const drinks = calculateAndFormatAddons('bebida', 'Bebidas', '🥤');
-
-            let message = `🍽️ *PEDIDO - VICTORINO.ENG* 🍽️\n\n`;
+        function renderSummary() {
+            const box = document.getElementById('modal-summary');
+            let html = '';
             
-            // Resumo & Entrega
-            message += `🚚 *Recebimento:* ${order.deliveryOption}`;
-            if (order.deliveryCost > 0) {
-                message += ` (${formatBRL(order.deliveryCost)} de taxa)`;
-            }
-            message += `\n`;
-
-            if (order.deliveryOption === 'Entrega' && order.deliveryAddress.trim()) {
-                message += `📍 *Endereço:* ${order.deliveryAddress.trim()}\n`;
-            }
-            
-            message += `\n📦 *Tamanho:* ${order.size.charAt(0).toUpperCase() + order.size.slice(1)} (${formatBRL(order.basePrice)})\n\n`;
-            
-            message += `═══════════════════\n_ITENS SELECIONADOS:_\n═══════════════════\n\n`;
+            // Base
+            html += `<div class="summary-row"><span>Marmita ${order.size.toUpperCase()}</span><span>${order.basePrice.toFixed(2)}</span></div>`;
             
             // Carnes
-            if (order.carnes.length > 0) {
-                 const selectedCarnes = order.carnes.map(cleanName => {
-                    const option = document.querySelector(`.toggle-option[data-value="${cleanName}"][data-type="carne"]`);
-                    return option ? option.querySelector('span:not(.extra-price)').textContent.trim() : cleanName;
-                });
-                message += `🥩 *CARNES (${order.carnes.length}/${order.maxCarnes}):*\n${selectedCarnes.map(c => `   • ${c}`).join('\n')}\n\n`;
+            if(order.carnes.length) {
+                html += `<div class="summary-row" style="color:#aaa; font-size:0.8em; padding-left:10px;">• ${order.carnes.join(', ')}</div>`;
             }
             
-            // Guarnições
-            if (order.guarnicoes.length > 0) {
-                 const selectedGuarnicoes = order.guarnicoes.map(cleanName => {
-                    const option = document.querySelector(`.toggle-option[data-value="${cleanName}"][data-type="guarnicao"]`);
-                    return option ? option.querySelector('span:not(.extra-price)').textContent.trim() : cleanName;
-                });
-                message += `🍚 *GUARNIÇÕES:*\n${selectedGuarnicoes.map(g => `   • ${g}`).join('\n')}\n\n`;
-            }
-
-            // Saladas
-            if (order.saladas.length > 0) {
-                 const selectedSaladas = order.saladas.map(cleanName => {
-                    const option = document.querySelector(`.toggle-option[data-value="${cleanName}"][data-type="salada"]`);
-                    return option ? option.querySelector('span:not(.extra-price)').textContent.trim() : cleanName;
-                });
-                message += `🥬 *SALADAS:*\n${selectedSaladas.map(s => `   • ${s}`).join('\n')}\n\n`;
-            }
+            // Extras
+            order.extras.forEach(e => {
+                html += `<div class="summary-row"><span>+ ${e.name}</span><span>${e.price.toFixed(2)}</span></div>`;
+            });
             
-            // Acompanhamentos
-            if (addons.names.length > 0) {
-                message += `➕ *ACOMPANHAMENTOS:*\n`;
-                addons.names.forEach(a => {
-                    // Remove os emojis do nome do item antes de procurar o preço.
-                    const cleanName = a.replace(/[\uD800-\uDBFF\uDC00-\uDFFF]|\uFE0F|[\u2700-\u27BF]|\u2300-\u23FF|[\u2B00-\u2BFF]|[\u203C\u2049\u2190-\u21FF\u24C2\u25AA\u25FE\u2600-\u27EF\u2900-\u2935\u2E80-\u32FF\u3400-\u4DBF\u4E00-\u9FFF]|\uFE0E|\uFFFD/g, '').trim(); 
-                    const addonItem = document.querySelector(`.toggle-option[data-value="${cleanName}"][data-type="acompanhamento"]`);
-                    const priceText = addonItem && addonItem.getAttribute('data-extra-price') ? ` (+R$ ${parseFloat(addonItem.getAttribute('data-extra-price')).toFixed(2).replace('.', ',')})` : '';
-                    message += `   • ${a}${priceText}\n`;
-                });
-                message += `\n`;
+            // Delivery
+            if(order.deliveryType) {
+                const label = order.deliveryType === 'entrega' ? 'Entrega' : 'Retirada';
+                const val = order.deliveryCost > 0 ? order.deliveryCost.toFixed(2) : 'Grátis';
+                html += `<div class="summary-row"><span>${label}</span><span>${val}</span></div>`;
             }
+
+            // Total Final
+            let totalFinal = order.basePrice + order.deliveryCost;
+            order.extras.forEach(e => totalFinal += e.price);
             
-            // Bebidas
-            if (drinks.names.length > 0) {
-                message += `🥤 *BEBIDAS:*\n`;
-                drinks.names.forEach(d => {
-                    // Adiciona o preço ao nome da bebida para clareza no WhatsApp
-                    const cleanName = d.replace(/[\uD800-\uDBFF\uDC00-\uDFFF]|\uFE0F|[\u2700-\u27BF]|\u2300-\u23FF|[\u2B00-\u2BFF]|[\u203C\u2049\u2190-\u21FF\u24C2\u25AA\u25FE\u2600-\u27EF\u2900-\u2935\u2E80-\u32FF\u3400-\u4DBF\u4E00-\u9FFF]|\uFE0E|\uFFFD/g, '').trim(); 
-                    const drinkItem = document.querySelector(`.toggle-option[data-value="${cleanName}"][data-type="bebida"]`);
-                    const priceText = drinkItem ? ` (+R$ ${parseFloat(drinkItem.getAttribute('data-extra-price')).toFixed(2).replace('.', ',')})` : '';
-                    message += `   • ${d}${priceText}\n`;
-                });
-                message += `\n`;
-            }
-
-            // NOVO: Notas Finais
-            if (order.orderNotes.trim()) {
-                message += `📝 *OBSERVAÇÕES:*\n_${order.orderNotes.trim()}_\n\n`;
-            }
-
-            message += `═══════════════════\n`;
-            message += `💰 *TOTAL: ${formatBRL(order.totalPrice)}*\n`;
-            message += `═══════════════════\n\n`;
-
-            message += `💳 *FORMAS DE PAGAMENTO:*\n`;
-            message += `• PIX: ${PIX_KEY}\n`;
-            message += `• PicPay: ${PICPAY_USER}\n\n`;
-            message += `_Por favor, envie o comprovante após o pagamento!_`;
+            html += `<div class="summary-row total"><span>TOTAL</span><span>R$ ${totalFinal.toFixed(2).replace('.', ',')}</span></div>`;
             
-            const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappURL, '_blank');
+            box.innerHTML = html;
         }
 
-        // --- Inicialização ---
+        function sendToWhatsApp() {
+            // Validations
+            if(!order.deliveryType) {
+                alert('Por favor, selecione Entrega ou Retirada.');
+                return;
+            }
+            
+            const addressInput = document.getElementById('address-input').value;
+            if(order.deliveryType === 'entrega' && !addressInput.trim()) {
+                alert('Por favor, informe o endereço de entrega.');
+                return;
+            }
+            
+            order.address = addressInput;
+            order.notes = document.getElementById('notes-input').value;
 
-        document.querySelectorAll('.toggle-option').forEach(item => {
-            item.onclick = () => toggleOption(item);
+            // Build Message
+            let msg = `*NOVO PEDIDO - VICTORINO.ENG* 🍽️\n\n`;
+            msg += `*Tamanho:* ${order.size.toUpperCase()}\n`;
+            msg += `*Carnes:* ${order.carnes.join(', ')}\n`;
+            
+            if(order.guarnicoes.length) msg += `*Guarnições:* ${order.guarnicoes.join(', ')}\n`;
+            if(order.saladas.length) msg += `*Saladas:* ${order.saladas.join(', ')}\n`;
+            
+            if(order.extras.length) {
+                msg += `\n*Extras/Bebidas:*\n`;
+                order.extras.forEach(e => msg += `- ${e.name}\n`);
+            }
+            
+            msg += `\n--------------------------------\n`;
+            msg += `*Entrega:* ${order.deliveryType.toUpperCase()}\n`;
+            if(order.deliveryType === 'entrega') msg += `📍 *Endereço:* ${order.address}\n`;
+            if(order.notes) msg += `📝 *Obs:* ${order.notes}\n`;
+            
+            let totalFinal = order.basePrice + order.deliveryCost;
+            order.extras.forEach(e => totalFinal += e.price);
+            
+            msg += `\n💰 *TOTAL: R$ ${totalFinal.toFixed(2).replace('.', ',')}*\n`;
+            msg += `--------------------------------\n`;
+            msg += `Aguardo a confirmação e chave PIX!`;
+
+            const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        }
+
+        // Close modal on click outside
+        document.getElementById('checkout-modal').addEventListener('click', (e) => {
+            if(e.target === document.getElementById('checkout-modal')) closeCheckoutModal();
         });
-        
-        // Define links e alertas de pagamento
-        document.querySelector('.payment-button.pix').onclick = (e) => {
-            e.preventDefault();
-            alert(`Chave PIX: ${PIX_KEY}\n\nApós o pagamento, envie o comprovante no WhatsApp!`);
-        };
 
-        document.querySelector('.payment-button.picpay').href = `https://picpay.me/${PICPAY_USER}`;
-
-        document.addEventListener('DOMContentLoaded', updateSummary);
     </script>
 </body>
 </html>
